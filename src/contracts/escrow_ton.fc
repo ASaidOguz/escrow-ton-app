@@ -1,0 +1,102 @@
+#include "imports/stdlib.fc";
+;; operation approve created with c prefix, arbiter can approve
+
+const op::approve = "op::approve"c; 
+
+;;operation cancel created with c prefix,arbiter can cancel in case of any kind of dispute;
+
+const op::cancel = "op::cancel"c; 
+
+global int ctx_id;      
+global slice arbiter;     ;;ariter who approve transfer by ...
+global slice beneficiary; ;;beneficiary who receives contracts fund after transfer approvment...
+global slice owner;       ;;owner of the escrow contract initiated in deployment... 
+
+
+() load_data () impure {
+  slice ds = get_data().begin_parse();
+  ctx_id = ds~load_uint(32);
+  arbiter = ds~load_msg_addr();
+  beneficiary = ds~load_msg_addr();
+  owner = ds~load_msg_addr();
+}
+
+() authorize (sender) inline {
+  throw_unless(187, equal_slice_bits(sender, arbiter));
+}
+
+() transfermsg(slice beneficiary) impure {
+  load_data();
+    var message = begin_cell()
+        .store_uint(0x10, 6)
+        .store_slice(beneficiary)
+        .store_coins(0)
+        .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+        .store_uint(0, 32)
+        .store_slice("Hello,beneficiary Your payment confirmed!")
+        .end_cell();
+
+    send_raw_message(message, 128);
+
+}
+() cancelmsg(slice owner) impure {
+  load_data();
+  var message = begin_cell()
+      .store_uint(0x10,6)
+      .store_slice(owner)
+      .store_coins(0)
+      .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+      .store_uint(0, 32)
+      .store_slice("Hello,Arbiter canceled the transaction!")
+      .end_cell();
+     send_raw_message(message,128);
+}
+
+() recv_internal (in_msg_full, in_msg_body) {
+    if (in_msg_body.slice_empty?()) { ;; ignore empty messages
+        return ();
+    }
+    slice cs = in_msg_full.begin_parse();
+    int flags = cs~load_uint(4);
+
+    if (flags & 1) { ;; ignore all bounced messages
+        return ();
+    }
+    slice sender_address = cs~load_msg_addr();
+    
+    int op = in_msg_body~load_uint(32);
+    int query_id = in_msg_body~load_uint(64);
+
+    authorize(sender_address); ;;check if the sender is arbiter so the contract can be approved...
+    if (op == op::approve){
+    load_data();
+    transfermsg(beneficiary);
+      return();
+    }
+    if(op == op::cancel){
+    load_data();
+    cancelmsg(owner);
+      return();
+    }
+    throw(0xffff);
+}
+
+(slice) get_arbiter() method_id {
+load_data();
+return arbiter;
+}
+
+(slice) get_beneficiary() method_id {
+load_data();
+return beneficiary;
+}
+
+slice get_owner() method_id {
+  load_data();
+  return owner;
+}
+
+int get_queryid() method_id {
+  load_data();
+  return ctx_id;
+}
