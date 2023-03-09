@@ -20,9 +20,6 @@ export default function Form(props:FormProps) {
   const handleBeneficiaryChange=(e:{target:{value:string}})=>props.setBeneficiary(e.target.value);
   const handleValueChange=(e:{target:{value:string}})=>props.setValue(e.target.value)
 
-    
-
-
   return (
     <FormControl>
     <FormLabel>Arbiter</FormLabel>
