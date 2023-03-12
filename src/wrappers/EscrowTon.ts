@@ -1,18 +1,24 @@
 import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from 'ton-core';
 
 export type EscrowTonConfig = { 
-                                query_id:number,
-                                arbiter:Address,
-                                beneficiary:Address,
-                                owner:Address
+                               query_id:number,
+                                approved:number,
+                                canceled:number,
+                               arbiter:Address,
+                               beneficiary:Address,
+                               owner:Address,
+                               job_description:string
                               };
 
 export function escrowTonConfigToCell(config: EscrowTonConfig): Cell {
     return beginCell()
     .storeUint(config.query_id,32)
+    .storeUint(config.approved,2)
+    .storeUint(config.canceled,2)
     .storeAddress(config.arbiter)
     .storeAddress(config.beneficiary)
     .storeAddress(config.owner)
+    .storeStringRefTail(config.job_description)
     .endCell();
 }
 export const Opcodes = {
@@ -102,5 +108,20 @@ export class EscrowTon implements Contract {
     async getQueryid(provider:ContractProvider){
         const result=await provider.get('get_queryid',[])
         return result.stack.readNumber();
+    }
+    //getter for Job description
+    async getJobDescription(provider:ContractProvider){
+        const result=await provider.get('get_jobDescription',[])
+        return result.stack.readString();
+    }
+    //getter for approve state
+    async getApproved(provider:ContractProvider){
+        const result=await provider.get('get_approved',[])
+        return result.stack.readNumber()
+    }
+    //getter for canceled state
+    async getCanceled(provider:ContractProvider){
+        const result=await provider.get('get_canceled',[])
+        return result.stack.readNumber()
     }
 }

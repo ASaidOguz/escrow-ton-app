@@ -1,18 +1,22 @@
-import './App.css';
+
 import { TonConnectButton } from '@tonconnect/ui-react';
 import Form from './components/Form';
 import { useState } from 'react';
-import { Button, ButtonGroup } from '@chakra-ui/react'
+import { Button, ButtonGroup,SimpleGrid, Stack,Text,Grid,GridItem,Box } from '@chakra-ui/react'
 import { useTonConnect } from './hooks/useTonConnect';
 import { useEscrowContract } from './hooks/useEscrowContract';
 import Escrow from './components/Escrow';
 import { useEffect } from 'react';
+import bgImage from "./assets/Escrow-Ton.png";
+import AnimatedBackground from './components/AnimatedBackground';
 
 
 function App() {
   const[arbiter,setArbiter]=useState<string>("");
   const[beneficiary,setBeneficiary]=useState<string>("");
   const[value,setValue]=useState<string>("");
+  const[job_description,setJob_description]=useState<string>("");
+
   const [result, setResult] = useState<string>('');
   const [contractadrress,setContractadrress]=useState<string[]>([]);
 
@@ -20,7 +24,7 @@ function App() {
   
   const { connected } = useTonConnect(setResult);
   
-  const {  address, sendDeploy } = useEscrowContract(arbiter,beneficiary,value,setResult)?? {};;
+  const {  address, sendDeploy } = useEscrowContract(arbiter,beneficiary,value,setResult,job_description)?? {};;
   
   useEffect(() => {
     const storedAddresses = localStorage.getItem('contractAddresses');
@@ -30,23 +34,35 @@ function App() {
     }
   },[]);
   useEffect(() => {
-    localStorage.setItem('contractAddresses', JSON.stringify(contractadrress));
-  }, [contractadrress]);
-  
+    setContractadrress(prevState => {
+      const newAddresses = [...prevState, address];
+      const uniqueAddresses = Array.from(new Set(newAddresses.filter(addr => addr)));
+      return uniqueAddresses as string[];
+    });  
+  }, [result]);
+    useEffect(()=>{
+      localStorage.setItem('contractAddresses', JSON.stringify(contractadrress));
+    },[contractadrress,result])
+    
    return (
-    <div >
-  
-    <TonConnectButton />
+    <>
+   
+    <Box>
+    <AnimatedBackground/>
+    <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+    <GridItem ml={7}>
     <Form
       arbiter={''} 
       beneficiary={''} 
       value={''} 
+      job_description={''}
       setArbiter={setArbiter}
       setBeneficiary={setBeneficiary}
       setValue={setValue}
+      setJob_description={setJob_description}
     />
     {address ? (
-      <>
+      <Stack mt={4}>
         <div>Contract Address: {address}</div>
         <div>Arbiter: {arbiter}</div>
         <div>Beneficiary: {beneficiary}</div>
@@ -54,22 +70,34 @@ function App() {
         {sendDeploy && (
           <Button id="deployButton" colorScheme='blue' onClick={()=>{
             sendDeploy()
-            setContractadrress(prevState=>[...prevState,address])
+           
             console.log("Address:",address)
             }}>Deploy</Button>
         )}
          
-      </>
+      </Stack>
     ) : (
-      <div>No contract details to show</div>
+      <Stack>
+      <Text mt={4}>No contract details to show</Text>
+      </Stack>
     )}
     {contractadrress&&<div>
-    {contractadrress.map((address,index)=><Escrow address={address} key={index} setResult={setResult} result={result}/>)}
+    { <SimpleGrid spacing={2} mt={4} templateColumns='repeat(auto-fill, minmax(400px, 1fr))'>
+     { contractadrress.map((address,index)=><Escrow address={address} key={index} 
+     setResult={setResult} 
+     result={result}
+     />)}
+      </SimpleGrid>}
     </div>}
-    <Button colorScheme={"cyan"}  color={"red"} onClick={()=>{localStorage.removeItem('contractAddresses')
-      
+    <Box display="flex" justifyContent="center">
+    <Button  colorScheme={"cyan"}  color={"red"} mt={4} onClick={()=>{localStorage.removeItem('contractAddresses') 
     }}>Clear Contract Cache</Button>
-  </div>
+    </Box>
+    </GridItem>
+    <GridItem><TonConnectButton /></GridItem>
+  </Grid>
+  </Box>
+  </>
   );
 }
 
