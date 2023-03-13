@@ -25,18 +25,18 @@ export default function Form(props:FormProps) {
   const handleJDescriptionChange=(e:{target:{value:string}})=>props.setJob_description(e.target.value)
   return (
     <FormControl>
-    <FormLabel>Arbiter</FormLabel>
+    <FormLabel fontWeight="bold">Arbiter</FormLabel>
     <Input type='text'  onChange={handleArbiterChange}/>
-    <FormHelperText>Please insert your arbiter's Address</FormHelperText>
-    <FormLabel>Beneficiary</FormLabel>
+    <FormHelperText fontWeight="bold">Please insert your arbiter's Address</FormHelperText>
+    <FormLabel fontWeight="bold">Beneficiary</FormLabel>
     <Input type='text'  onChange={handleBeneficiaryChange} />
-    <FormHelperText>Please insert your beneficiary's Address</FormHelperText>
-    <FormLabel>Value</FormLabel>
+    <FormHelperText fontWeight="bold">Please insert your beneficiary's Address</FormHelperText>
+    <FormLabel fontWeight="bold">Value</FormLabel>
     <Input type='text'  onChange={handleValueChange}/>
-    <FormHelperText>Please insert desired value in TON (Minimum Amount is 1.55 Ton)</FormHelperText>
-    <FormLabel>Job Description</FormLabel>
-        <Textarea placeholder="Insert your Job Description..." size="sm" resize="vertical" onChange={handleJDescriptionChange} />
-        <FormHelperText>Please insert your Job description</FormHelperText>
+    <FormHelperText fontWeight="bold">Please insert desired value in TON (Minimum Amount is 1.55 Ton)</FormHelperText>
+    <FormLabel fontWeight="bold">Job Description</FormLabel>
+        <Textarea  size="sm" resize="vertical" onChange={handleJDescriptionChange} />
+        <FormHelperText fontWeight="bold">Please insert your Job description</FormHelperText>
     </FormControl>
   )
 }

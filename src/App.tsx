@@ -1,7 +1,7 @@
 
 import { TonConnectButton } from '@tonconnect/ui-react';
 import Form from './components/Form';
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { Button, ButtonGroup,SimpleGrid, Stack,Text,Grid,GridItem,Box } from '@chakra-ui/react'
 import { useTonConnect } from './hooks/useTonConnect';
 import { useEscrowContract } from './hooks/useEscrowContract';
@@ -9,6 +9,7 @@ import Escrow from './components/Escrow';
 import { useEffect } from 'react';
 import bgImage from "./assets/Escrow-Ton.png";
 import AnimatedBackground from './components/AnimatedBackground';
+import EscrowExplorer from './components/EscrowExplorer';
 
 
 function App() {
@@ -94,7 +95,11 @@ function App() {
     }}>Clear Contract Cache</Button>
     </Box>
     </GridItem>
-    <GridItem><TonConnectButton /></GridItem>
+    <GridItem><TonConnectButton />
+    <EscrowExplorer setResult={function (value: SetStateAction<string>): void {
+               throw new Error('Function not implemented.');
+             } } result={''}/>
+    </GridItem>
   </Grid>
   </Box>
   </>

@@ -93,7 +93,7 @@ export default  function  Escrow(props: { address: any;
     <Skeleton height="20px" w="100%" />
   ) : (
     <>
-      <Text as="span" color="green.500">Arbiter: </Text>
+      <Text as="span" color="green.500">Arbiter:&nbsp;&nbsp;&nbsp;</Text>
       <Text as="span">{arbiter}</Text>
     </>
   )}
@@ -113,7 +113,7 @@ export default  function  Escrow(props: { address: any;
     <Skeleton height="20px" w="100%" />
   ) : (
     <>
-      <Text as="span" color="orange.500">Owner: </Text>
+      <Text as="span" color="orange.500">Owner:&nbsp;&nbsp;&nbsp;</Text>
       <Text as="span">{owner}</Text>
     </>
   )}
