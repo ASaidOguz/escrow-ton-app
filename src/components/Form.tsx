@@ -26,16 +26,16 @@ export default function Form(props:FormProps) {
   return (
     <FormControl>
     <FormLabel fontWeight="bold">Arbiter</FormLabel>
-    <Input type='text'  onChange={handleArbiterChange}/>
+    <Input type='text' bg="gray.100"  onChange={handleArbiterChange}/>
     <FormHelperText fontWeight="bold">Please insert your arbiter's Address</FormHelperText>
     <FormLabel fontWeight="bold">Beneficiary</FormLabel>
-    <Input type='text'  onChange={handleBeneficiaryChange} />
+    <Input type='text' bg="gray.100" onChange={handleBeneficiaryChange} />
     <FormHelperText fontWeight="bold">Please insert your beneficiary's Address</FormHelperText>
     <FormLabel fontWeight="bold">Value</FormLabel>
-    <Input type='text'  onChange={handleValueChange}/>
+    <Input type='text' bg="gray.100" onChange={handleValueChange}/>
     <FormHelperText fontWeight="bold">Please insert desired value in TON (Minimum Amount is 1.55 Ton)</FormHelperText>
     <FormLabel fontWeight="bold">Job Description</FormLabel>
-        <Textarea  size="sm" resize="vertical" onChange={handleJDescriptionChange} />
+        <Textarea bg="gray.100" size="sm" resize="vertical" onChange={handleJDescriptionChange} />
         <FormHelperText fontWeight="bold">Please insert your Job description</FormHelperText>
     </FormControl>
   )

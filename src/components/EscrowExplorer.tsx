@@ -18,6 +18,8 @@ import { Card,
          Input,
          FormHelperText  } from '@chakra-ui/react'
 
+         import { ToastContainer, toast } from 'react-toastify';
+         import 'react-toastify/dist/ReactToastify.css';
 export default function EscrowExplorer(props: {
     setResult: React.Dispatch<React.SetStateAction<string>>;
     result:string;
@@ -62,6 +64,13 @@ export default function EscrowExplorer(props: {
           } catch (error) {
             setIsError(true);
             setIsLoading(false)
+            toast.error(`TVM 
+                        ${error}!!!
+                       `+"Not Escrow Contract", {
+                position: toast.POSITION.TOP_CENTER,theme:"colored"
+              });
+             
+            console.log("Error:",error)
             console.log("loading:",isLoading)
           }
         }
@@ -85,9 +94,11 @@ export default function EscrowExplorer(props: {
       },[address])  
   return (
     <Box mt={4}>
+        <ToastContainer 
+        autoClose={false}/>
     <FormControl>
         <FormLabel>Escrow Explorer</FormLabel>
-            <Input type='text'  onChange={handleAddresschange}></Input>
+            <Input type='text' bg="gray.100" onChange={handleAddresschange}></Input>
     <FormHelperText>Please insert your Contract address to see details</FormHelperText>          
     </FormControl>
     <Button
@@ -150,31 +161,22 @@ export default function EscrowExplorer(props: {
 )}
 </Text>
 <Text size={'md'} mt={4} isTruncated>
-{isLoading ? (
-<Skeleton height="20px" w="100%" />
-) : (
-<>
-<Text as="span" color="orange.500">Approved: </Text>
-<Text as="span">{approved}</Text>
-</>
-)}
+  {isLoading ? (
+    <Skeleton height="20px" w="100%" />
+  ) : (
+    <>
+      <Text as="span" color="blue.500">Contract State: </Text>
+      {approved?<Button as="span" bgColor={"ButtonShadow"} color={"green.300"}>Approved</Button>:(canceled?<Button as="span" bgColor={"ButtonShadow"} color={"red.300"}>Canceled</Button>:<Button as="span" bgColor={"ButtonShadow"} color={"blue.300"}>Pending</Button>)}
+    </>
+  )}
 </Text>
-<Text size={'md'} mt={4} isTruncated>
-{isLoading ? (
-<Skeleton height="20px" w="100%" />
-) : (
-<>
-<Text as="span" color="orange.500">Canceled: </Text>
-<Text as="span">{canceled}</Text>
-</>
-)}
-</Text>
+
 <Text size={'md'} mt={4} >
 {isLoading ? (
 <Skeleton height="20px" w="100%" />
 ) : (
 <>
-<Text as="span" color="orange.500">Job Description: </Text>
+<Text as="span" color="purple.500">Job Description: </Text>
 <Text as="span" overflow={'auto'} >{job_description}</Text>
 </>
 )}
@@ -185,24 +187,24 @@ export default function EscrowExplorer(props: {
 ) : (
 <>
 <Text as="span" color="orange.500">Contract Balance: </Text>
-<Text as="span" overflow={'auto'} >{balance}</Text>
+<Text as="span" overflow={'auto'} >{balance} TON</Text>
 </>
 )}
 </Text>
 </Stack>
 
-<Button
-  id="approveButton"
-  colorScheme="green"
-  mt={4} mr={2}
-  onClick={async () => {
-     await escrowcontract.sendApprove(sender, { value: toNano("1.55") })
-  }}
->
-  Approve 
-</Button>
+{(!approved && !canceled) &&<Button
+    id="approveButton"
+    colorScheme="green"
+    mt={4} mr={2}
+    onClick={async () => {
+       await escrowcontract.sendApprove(sender, { value: toNano("1.55") })
+    }}
+  >
+    Approve 
+  </Button>}
 
-<Button mt={4} ml={2}
+{(!approved && !canceled) &&<Button mt={4} ml={2}
 id="cancelButton"
 colorScheme="red"
 onClick={async () => {
@@ -210,7 +212,7 @@ await escrowcontract.sendCancel(sender, { value: toNano("1.55") })
 }}
 >
 Cancel  
-</Button>
+</Button>}
 </>
 ):(<CircularProgress
 
@@ -226,3 +228,7 @@ capIsRound
     </Box>
   )
 }
+function PushNotify() {
+    throw new Error('Function not implemented.');
+}
+

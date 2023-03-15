@@ -1,7 +1,7 @@
 import { useTonClient } from '../hooks/useTonClient';
 import { useAsyncInitialize } from '../hooks/useAsyncInitialize';
 import { useTonConnect } from '../hooks/useTonConnect';
-import { Address, OpenedContract,toNano,Cell, fromNano, address } from 'ton-core';
+import { Address, OpenedContract,toNano,Cell, fromNano, address,SenderArguments,beginCell,Slice } from 'ton-core';
 import { EscrowTon, } from '../wrappers/EscrowTon';
 import { Box, Button, Stack } from '@chakra-ui/react';
 import { useState,useEffect } from 'react';
@@ -67,7 +67,8 @@ export default  function  Escrow(props: { address: any;
       fetchGetters();
     }, [escrowcontract, result]);
     
-
+  
+  
 
   return (
     <Box maxW="xl" borderWidth="1px" borderRadius="lg" overflow="hidden">
@@ -118,23 +119,14 @@ export default  function  Escrow(props: { address: any;
     </>
   )}
 </Text>
+
 <Text size={'md'} mt={4} isTruncated>
   {isLoading ? (
     <Skeleton height="20px" w="100%" />
   ) : (
     <>
-      <Text as="span" color="orange.500">Approved: </Text>
-      <Text as="span">{approved}</Text>
-    </>
-  )}
-</Text>
-<Text size={'md'} mt={4} isTruncated>
-  {isLoading ? (
-    <Skeleton height="20px" w="100%" />
-  ) : (
-    <>
-      <Text as="span" color="orange.500">Canceled: </Text>
-      <Text as="span">{canceled}</Text>
+      <Text as="span" color="orange.500">Contract State: </Text>
+      {approved?<Button as="span" bgColor={"ButtonShadow"} color={"green.300"}>Approved</Button>:(canceled?<Button as="span" bgColor={"ButtonShadow"} color={"red.300"}>Canceled</Button>:<Button as="span" bgColor={"ButtonShadow"} color={"blue.300"}>Pending</Button>)}
     </>
   )}
 </Text>
@@ -150,7 +142,7 @@ export default  function  Escrow(props: { address: any;
 </Text>
 </Stack>
 
-      <Button
+{(!approved && !canceled) &&<Button
         id="approveButton"
         colorScheme="green"
         mt={4} mr={2}
@@ -159,9 +151,9 @@ export default  function  Escrow(props: { address: any;
         }}
       >
         Approve 
-      </Button>
+      </Button>}
 
-<Button mt={4} ml={2}
+{(!approved && !canceled) &&<Button mt={4} ml={2}
 id="cancelButton"
 colorScheme="red"
 onClick={async () => {
@@ -169,7 +161,18 @@ onClick={async () => {
 }}
 >
 Cancel  
-</Button>
+</Button>}
+
+{(!approved && !canceled) &&<Button mt={4} ml={2}
+id="cancelButton"
+colorScheme="red"
+onClick={async () => {
+  await escrowcontract.sendNotify(sender, { value: toNano("1.55") })
+}}
+>
+Notify Arbiter  
+</Button>}
+
 </>
     ):(condeployed?<CircularProgress
      

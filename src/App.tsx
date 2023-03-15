@@ -10,6 +10,8 @@ import { useEffect } from 'react';
 import bgImage from "./assets/Escrow-Ton.png";
 import AnimatedBackground from './components/AnimatedBackground';
 import EscrowExplorer from './components/EscrowExplorer';
+import AnimatedTitle from './components/AnimatedTitle';
+
 
 
 function App() {
@@ -44,14 +46,16 @@ function App() {
     useEffect(()=>{
       localStorage.setItem('contractAddresses', JSON.stringify(contractadrress));
     },[contractadrress,result])
+    console.log("Connect :",connected)
     
+   
    return (
     <>
-   
     <Box>
     <AnimatedBackground/>
     <Grid templateColumns="repeat(2, 1fr)" gap={6}>
     <GridItem ml={7}>
+      <AnimatedTitle/>
     <Form
       arbiter={''} 
       beneficiary={''} 
@@ -91,11 +95,14 @@ function App() {
       </SimpleGrid>}
     </div>}
     <Box display="flex" justifyContent="center">
-    <Button  colorScheme={"cyan"}  color={"red"} mt={4} onClick={()=>{localStorage.removeItem('contractAddresses') 
+    <Button  colorScheme={"teal"}  color={"red"} mt={4} mb={4} onClick={()=>{localStorage.removeItem('contractAddresses') 
     }}>Clear Contract Cache</Button>
     </Box>
     </GridItem>
-    <GridItem><TonConnectButton />
+    <GridItem>
+      <Box mt={4}>
+      <TonConnectButton/>
+      </Box>
     <EscrowExplorer setResult={function (value: SetStateAction<string>): void {
                throw new Error('Function not implemented.');
              } } result={''}/>
