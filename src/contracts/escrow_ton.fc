@@ -1,3 +1,5 @@
+
+
 #include "imports/stdlib.fc";
 ;; operation approve created with c prefix, arbiter can approve
 
@@ -6,6 +8,8 @@ const op::approve = "op::approve"c;
 ;;operation cancel created with c prefix,arbiter can cancel in case of any kind of dispute;
 
 const op::cancel = "op::cancel"c; 
+
+const op::notify = "op::notify"c; ;;operation notify with c prefix ,arbiter will be notified by owner;
 
 global int ctx_id; 
 global int approved;
@@ -73,6 +77,19 @@ const int min_arbiter_call = 1500000000; ;;min arbiter approve message sending f
      send_raw_message(message,128);
 }
 
+() notifymsg() impure {
+  load_data();
+  var message = begin_cell()
+      .store_uint(0x18,6)
+      .store_slice(arbiter)
+      .store_coins(0)
+      .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+      .store_uint(0, 32)
+      .store_slice("Message's originated from escrow contract!")
+      .end_cell();
+     send_raw_message(message,64);
+}
+
 () nonarbitermsg(sender,sender_value) impure {
      load_data();
      var message = begin_cell()
@@ -124,6 +141,11 @@ const int min_arbiter_call = 1500000000; ;;min arbiter approve message sending f
     save_data(0,1);
       return();
     }
+
+    if(op == op::notify) {
+      notifymsg();
+      return();
+    }
     throw(0xffff);
 }
 
@@ -161,3 +183,4 @@ int get_canceled() method_id {
    load_data();
    return canceled;
 }
+
