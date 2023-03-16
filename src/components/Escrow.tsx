@@ -31,10 +31,10 @@ export default  function  Escrow(props: { address: any;
     const escrowcontract= useAsyncInitialize(async()=>{
       if (!client) return;
       setCondeployed(true)
-      await sleep(12000)          
+      await sleep(15000)          
       setCondeployed(false)
       const isDeployed=await client.isContractDeployed(Address.parse(address))
-      console.log("İsDeployed:",isDeployed)
+      console.log("Here İsDeployed:",isDeployed)
       if(isDeployed){
       const openedContract=EscrowTon.createFromAddress(Address.parse(address))
       return  client.open(openedContract) as OpenedContract<EscrowTon>;}
