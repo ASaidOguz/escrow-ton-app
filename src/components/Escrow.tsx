@@ -19,7 +19,7 @@ export default  function  Escrow(props: { address: any;
     const[job_description,setJob_description]=useState<string>("");
     const[approved,setApproved]=useState<number>(0);
     const[canceled,setCanceled]=useState<number>(0);
-
+    const[deployed,setDeployed]=useState(false)
     const{address,setResult,result}= props
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
@@ -31,9 +31,10 @@ export default  function  Escrow(props: { address: any;
     const escrowcontract= useAsyncInitialize(async()=>{
       if (!client) return;
       setCondeployed(true)
-      await sleep(15000)          
+      await sleep(20000)          
       setCondeployed(false)
       const isDeployed=await client.isContractDeployed(Address.parse(address))
+      setDeployed(isDeployed)
       console.log("Here İsDeployed:",isDeployed)
       if(isDeployed){
       const openedContract=EscrowTon.createFromAddress(Address.parse(address))
