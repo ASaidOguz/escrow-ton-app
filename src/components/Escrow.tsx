@@ -31,7 +31,7 @@ export default  function  Escrow(props: { address: any;
     const escrowcontract= useAsyncInitialize(async()=>{
       if (!client) return;
       setCondeployed(true)
-      await sleep(10000)          
+      await sleep(12000)          
       setCondeployed(false)
       const isDeployed=await client.isContractDeployed(Address.parse(address))
       console.log("İsDeployed:",isDeployed)
