@@ -73,7 +73,7 @@ function App() {
         <div>Beneficiary: {beneficiary}</div>
         <div>Value: {value}</div>
         {sendDeploy && (
-          <Button id="deployButton" colorScheme='blue' onClick={()=>{
+          <Button id="deployButton" colorScheme='purple' onClick={()=>{
             sendDeploy()
            
             console.log("Address:",address)
