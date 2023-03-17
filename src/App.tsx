@@ -11,6 +11,7 @@ import bgImage from "./assets/Escrow-Ton.png";
 import AnimatedBackground from './components/AnimatedBackground';
 import EscrowExplorer from './components/EscrowExplorer';
 import AnimatedTitle from './components/AnimatedTitle';
+import InfoCard from './components/InfoCard';
 
 
 
@@ -106,6 +107,7 @@ function App() {
     <EscrowExplorer setResult={function (value: SetStateAction<string>): void {
                throw new Error('Function not implemented.');
              } } result={''}/>
+             <InfoCard/>
     </GridItem>
   </Grid>
   </Box>
